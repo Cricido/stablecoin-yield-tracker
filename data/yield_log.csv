@@ -1,1 +1,7 @@
-ds
+data,protocol,chain,stablecoin,APY,TVL_USD,vault,note
+2025-08-07,Morpho,Ethereum,USDT,6.21,8471235,Steckhouse,auto-compound
+2025-08-07,Pendle,Arbitrum,sUSDe,9.11,2354912,YT-sUSDe-Dec25,high risk
+2025-08-07,Yearn,Ethereum,DAI,4.35,1298473,Yearn v3 DAI,safe
+2025-08-07,Ethena,Ethereum,sUSDe,5.87,3182741,sUSDe staking,variable
+2025-08-07,Beefy,Base,USDC,7.25,912374,Beefy USDC AutoVault,boosted
+2025-08-07,USDY,Ethereum,USDY,5.3,2873412,Ondo USDY,tokenized T-Bills
