@@ -27,8 +27,10 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add data/yield_log.csv
+
           if git diff --cached --quiet; then
             echo "✅ Nessuna modifica da salvare, tutto ok."
           else
             git commit -m "update yield log"
             git push
+          fi
