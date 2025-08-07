@@ -10,18 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
       - name: Run fetch_yields.py
-        run: |
-          pip install requests
-          python scripts/fetch_yields.py
-      - name: Commit and push
+        run: python scripts/fetch_yields.py
+
+      - name: Commit and push only if changes
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add data/yield_log.csv
-          git commit -m "update yield log"
-          git push
+          if git diff --cached --quiet; then
+            echo "✅ Nessuna modifica da salvare, tutto ok."
+          else
+            git commit -m "update yield log"
+            git push
