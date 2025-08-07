@@ -1,38 +1,42 @@
-
 import requests
 import csv
 from datetime import datetime
 
 today = datetime.today().strftime('%Y-%m-%d')
-
-# Morpho Steckhouse USDT su Ethereum
-# Questa API è un placeholder: può cambiare se Morpho aggiorna l'infrastruttura
-response = requests.get("https://api.llama.fi/yield/morpho")
-data = response.json()
-
-# Filtra solo Steckhouse USDT
-entries = [
-    entry for entry in data["data"]["projects"]
-    if entry["project"] == "morpho"
-]
-
 rows = []
 
-for entry in entries:
-    for vault in entry.get("vaults", []):
-        if "steckhouse" in vault["symbol"].lower() and vault["symbol"].endswith("USDT"):
+try:
+    response = requests.get("https://yields.llama.fi/pools")  # nuova API corretta
+    if response.status_code != 200:
+        raise Exception(f"Errore HTTP {response.status_code}")
+
+    data = response.json()
+
+    # Filtro Morpho Steckhouse USDT
+    for entry in data.get("data", []):
+        if (
+            entry.get("project") == "morpho-blue"
+            and "steckhouse" in entry.get("symbol", "").lower()
+            and "usdt" in entry.get("symbol", "").lower()
+        ):
             rows.append([
                 today,
                 "Morpho",
-                "Ethereum",
+                entry.get("chain", "Ethereum"),
                 "USDT",
-                round(vault.get("apy", 0) * 100, 2),
-                int(vault.get("tvlUsd", 0)),
+                round(entry.get("apy", 0), 2),
+                int(entry.get("tvlUsd", 0)),
                 "Steckhouse",
                 "real APY"
             ])
 
-# Scrive nel file CSV
-with open("data/yield_log.csv", "a", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerows(rows)
+except Exception as e:
+    print(f"[ERRORE] {e}")
+
+# Scrive nel file CSV se ci sono righe valide
+if rows:
+    with open("data/yield_log.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(rows)
+else:
+    print("[INFO] Nessun dato Morpho valido trovato.")
